@@ -1,5 +1,5 @@
 --- 
-title: "YOUR TITLE HERE"
+title: "An Analysis on Crime Data of NYC"
 author: "Tianhao Wu & Kechengjie Zhu"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
