@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 4 Missing values | YOUR TITLE HERE</title>
-  <meta name="description" content="Chapter 4 Missing values | YOUR TITLE HERE" />
+  <title>Chapter 4 Missing values | An Analysis on Crime Data of NYC</title>
+  <meta name="description" content="Chapter 4 Missing values | An Analysis on Crime Data of NYC" />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 4 Missing values | YOUR TITLE HERE" />
+  <meta property="og:title" content="Chapter 4 Missing values | An Analysis on Crime Data of NYC" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 4 Missing values | YOUR TITLE HERE" />
+  <meta name="twitter:title" content="Chapter 4 Missing values | An Analysis on Crime Data of NYC" />
   
   
   
@@ -24,7 +24,7 @@
 <meta name="author" content="Tianhao Wu &amp; Kechengjie Zhu" />
 
 
-<meta name="date" content="2021-11-18" />
+<meta name="date" content="2021-11-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -91,7 +91,7 @@
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">YOUR TITLE HERE</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Analysis on Crime Data of NYC</a>
           </h1>
         </div>
 
@@ -101,6 +101,14 @@
             <section class="normal" id="section-">
 <div id="missing-values" class="section level1" number="4">
 <h1><span class="header-section-number">Chapter 4</span> Missing values</h1>
+<p>The Covid data here will be used to analyze the correlation between crime rates and Covid cases.</p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>We can see in the graph that most rows have complete entries.<br />
+Probable_cases, confirmed_cases, probable_death, and confirmed_death tend to have most missing values. This can be explained by variables consent_cases and consent_deaths; if no consent is given, cases and deaths data are left blank.<br />
+Pnew_cases and pnew_death (numbers of probable cases &amp; deaths, respectively) also have missing values, very likely due to incomplete information in the four aforementioned columns.<br />
+Fortunately, new_cases, total_cases, new_death, and total_death displays no missing data, so we can visualize trends of the spread of Covid with perfect continuity.</p>
+<p>Source:
+<a href="https://data.cdc.gov/Case-Surveillance/United-States-COVID-19-Cases-and-Deaths-by-State-o/9mfq-cb36" class="uri">https://data.cdc.gov/Case-Surveillance/United-States-COVID-19-Cases-and-Deaths-by-State-o/9mfq-cb36</a></p>
 
 </div>
             </section>
