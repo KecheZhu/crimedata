@@ -1,3 +1,92 @@
 # Missing values
 
-# Tianhao Wu
+```{r}
+library(tidyverse)
+library(patchwork)
+```
+
+```{r, plot function a}
+plot_missing <- function(data, percent = FALSE) {
+  if (percent == FALSE) {
+    cols <- colSums(is.na(data)) %>% sort(decreasing = TRUE)
+    missing_label = 'missing'
+  } else {
+    cols <- colSums(is.na(data))
+    if (sum(cols) > 0) {
+      cols <- cols/sum(cols)*100
+    }
+    cols <- cols %>% sort(decreasing = TRUE)
+    missing_label = '%missing'
+  }
+  
+  pu <- ggplot() +
+    geom_bar(aes(x = names(cols), y = cols), fill = 'cornflowerblue', stat = 'identity') +
+    ggtitle('Missing value patterns') +
+    scale_x_discrete(limits = names(cols)) +
+    ylab(missing_label) +
+    theme_bw() +
+    theme(axis.title.x = element_blank(), panel.grid.major.x = element_blank(), axis.text.x = element_text(angle = 90))
+  
+  missing_patterns <- data.frame(is.na(data[, names(cols)])) %>%
+    group_by_all() %>%
+    count(name = 'count', sort = TRUE) %>%
+    ungroup()
+  
+  row_count <- missing_patterns$count
+  missing_patterns <- missing_patterns[,names(missing_patterns) != 'count'] * 1
+  
+  complete_rows <- apply(missing_patterns, 1, function(row) all(row == 0 ))
+  missing_patterns[complete_rows,] <- 2
+  
+  df <- missing_patterns %>% 
+    mutate(id = row_number()) %>%
+    gather(key, value, -id)
+  
+  pm <- ggplot(df, aes(key, fct_rev(as.factor(id)), fill = as.factor(value))) +
+    geom_tile(color = 'white') +
+    scale_fill_manual(values = c('0' = 'gray', '1' = 'blueviolet', '2' = 'black')) +
+    scale_x_discrete(limits = names(cols)) + 
+    ylab('missing pattern') +
+    xlab('variable') +
+    theme_bw() +
+    theme(legend.position = 'none', axis.text.x = element_text(angle = 90))
+  
+  if (percent == TRUE) {
+    row_count <- row_count/sum(row_count) * 100
+  } 
+  
+  r <- data.frame('row count' = row_count, 'r_id' = 1:length(row_count), 'complete' = complete_rows*1)
+  pr <- ggplot(r, aes(fct_rev(as.factor(r_id)), row_count, fill = as.factor(complete))) +
+    geom_bar(stat = 'identity') +
+    scale_fill_manual(values = c('0' = 'cornflowerblue', '1' = 'blue')) +
+    coord_flip() + 
+    theme_bw() +
+    theme(axis.title.y = element_blank(), panel.grid.major.y = element_blank(), legend.position = 'none')
+  
+  layout <- '
+  AAA#
+  BBBC
+  BBBC
+  BBBC
+  '
+  
+  pu + pm + pr + plot_layout(design = layout)
+}
+```
+
+The Covid data here will be used to analyze the correlation between crime rates and Covid cases.
+
+```{r}
+url <- "https://raw.githubusercontent.com/KecheZhu/crimedata/main/United_States_COVID-19_Cases_and_Deaths_by_State_over_Time.csv"
+df <- read.csv(url)
+
+plot_missing(df, percent = FALSE)
+```
+
+We can see in the graph that most rows have complete entries.\
+Probable_cases, confirmed_cases, probable_death, and confirmed_death tend to have most missing values. This can be explained by variables consent_cases and consent_deaths; if no consent is given, cases and deaths data are left blank.\
+Pnew_cases and pnew_death (numbers of probable cases & deaths, respectively) also have missing values, very likely due to incomplete information in the four aforementioned columns.\
+Fortunately, new_cases, total_cases, new_death, and total_death displays no missing data, so we can visualize trends of the spread of Covid with perfect continuity.
+
+Source:
+https://data.cdc.gov/Case-Surveillance/United-States-COVID-19-Cases-and-Deaths-by-State-o/9mfq-cb36
