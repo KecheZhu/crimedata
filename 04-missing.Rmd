@@ -79,17 +79,9 @@ plot_missing <- function(data, percent = FALSE) {
 
 The Covid data here will be used to analyze the correlation between crime rates and Covid cases.
 
-```{r}
-url <- "https://raw.githubusercontent.com/KecheZhu/crimedata/main/United_States_COVID-19_Cases_and_Deaths_by_State_over_Time.csv"
+```{r, plot1}
+url <- "https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/park_crime.csv"
 df <- read.csv(url)
 
 plot_missing(df, percent = FALSE)
 ```
-
-We can see in the graph that most rows have complete entries.\
-Probable_cases, confirmed_cases, probable_death, and confirmed_death tend to have most missing values. This can be explained by variables consent_cases and consent_deaths; if no consent is given, cases and deaths data are left blank.\
-Pnew_cases and pnew_death (numbers of probable cases & deaths, respectively) also have missing values, very likely due to incomplete information in the four aforementioned columns.\
-Fortunately, new_cases, total_cases, new_death, and total_death displays no missing data, so we can visualize trends of the spread of Covid with perfect continuity.
-
-Source:
-https://data.cdc.gov/Case-Surveillance/United-States-COVID-19-Cases-and-Deaths-by-State-o/9mfq-cb36
