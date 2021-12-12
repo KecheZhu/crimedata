@@ -1,11 +1,14 @@
 # Missing values
 
-```{r}
+```{r setup, include=FALSE}
+# this prevents package loading message from appearing in the rendered version
+knitr::opts_chunk$set(warning = FALSE, message = FALSE,
+                      echo = TRUE)
 library(tidyverse)
 library(patchwork)
 ```
 
-```{r, plot function a}
+```{r, plot function}
 plot_missing <- function(data, percent = FALSE) {
   if (percent == FALSE) {
     cols <- colSums(is.na(data)) %>% sort(decreasing = TRUE)

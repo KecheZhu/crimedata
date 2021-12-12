@@ -1,1 +1,136 @@
 # Data transformation
+
+```{r setup, include=FALSE}
+# this prevents package loading message from appearing in the rendered version
+knitr::opts_chunk$set(warning = FALSE, message = FALSE,
+                      echo = TRUE)
+
+library(tidyverse)
+library(patchwork)
+library(readxl)
+```
+
+For crime data of all types from 2017 to 2021, we performed the following steps to clean the data:
+
+1. Select out and rename the columns of data we are interested in: Precinct, Date, Type of Crime, and Subtype of Crime. 
+2. Find out corresponding Borough based on Precinct
+3. The final output csv consists of the above 5 features while each row represents a crime reported.
+
+The following code demonstrates the workflow we applied to crime data in 2021. We also applied the same workflow to the data in 2017 - 2020 separately in order to save space.
+
+```{r, crime data 2017-2021}
+df <- read_csv("D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\NYPD_Complaint_Data_Current__Year_To_Date_.csv", show_col_types = FALSE)
+
+old_names <- c('ADDR_PCT_CD', 'CMPLNT_FR_DT', 'LAW_CAT_CD', 'OFNS_DESC')
+new_names <- c('pct', 'date', 'level', 'type')
+df <- df[,old_names]
+names(df) <- new_names
+
+df$month <- unlist(lapply(df$date, function(x) as.numeric(str_split(x, '/')[[1]][1])))
+df$year <- unlist(lapply(df$date, function(x) as.numeric(str_split(x, '/')[[1]][3])))
+df <- df[df$year == 2021,]
+
+find_boro <- function(pct){
+  if (pct %in% c(40,41,42,43,44,45,46,47,48,49,50,52)) {
+    return('BRONX')
+  } else if (pct %in% c(60,61,62,63,66,67,68,69,70,71,72,73,75,76,77,78,79,81,83,84,88,90,94)) {
+    return('BROOKLYN')
+  } else if (pct %in% c(1,5,6,7,9,10,13,14,17,18,19,20,22,23,24,25,26,28,30,32,33,34)) {
+    return('MANHATTAN')
+  } else if (pct %in% c(100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115)) {
+    return('QUEENS')
+  } else if (pct %in% c(120,121,122,123)) {
+    return('STATEN ISLAND')
+  } 
+}
+
+df$borough <- unlist(lapply(df$pct, function(x) find_boro(x)))
+#write.csv(df,"crime_21.csv")
+```
+
+For park crime data from 2017 to 2021, we performed the following steps to clean the data:
+
+1. Use the same naming of columns for all files
+2. Fix data types 
+3. Aggregate rows based on boroughs and compute the number of parks for each borough
+4. Specify quarter and year
+5. Combine park crime in all quarters from 2017 to 2021 into one single csv
+
+```{r, read in park crime data 2017 - 2021, include=FALSE}
+q1_17 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q1-2017.xlsx', skip = 3)
+q2_17 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q2-2017.xlsx', skip = 3)
+q3_17 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q3-2017.xlsx', skip = 3)
+q4_17 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q4-2017.xlsx', skip = 3)
+
+q1_18 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q1-2018.xlsx', skip = 3)
+q2_18 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q2-2018.xlsx', skip = 4)
+q3_18 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q3-2018.xlsx', skip = 3)
+q4_18 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q4-2018.xlsx', skip = 3)
+
+q1_19 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q1-2019.xlsx', skip = 3)
+q2_19 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q2-2019.xlsx', skip = 3)
+q3_19 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q3-2019.xlsx', skip = 3)
+q4_19 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q4-2019.xlsx', skip = 3)
+
+q1_20 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q1-2020a.xlsx', skip = 3)
+q2_20 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q2-2020.xlsx', skip = 3)
+q3_20 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q3-2020.xlsx', skip = 3)
+q4_20 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q4-2020.xlsx', skip = 3)
+
+q1_21 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q1-2021.xlsx', skip = 4)
+q2_21 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q2-2021.xlsx', skip = 3)
+q3_21 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q3-2021.xlsx', skip = 3)
+```
+
+```{r, read in park crime data 2017 - 2021, include=FALSE}
+
+agg <- function(df, q, y){
+  names(df) <- c('PARK', 'BOROUGH', 'SIZE (ACRES)', 'CATEGORY', 'MURDER', 'RAPE', 
+                 'ROBBERY', 'FELONY ASSAULT', 'BURGLARY', 'GRAND LARCENY',
+                 'GRAND LARCENY OF MOTOR VEHICLE', 'TOTAL')
+  
+  df <- df[1:(nrow(df)-2),]
+  
+  features <- c('MURDER', 'RAPE', 'ROBBERY', 'FELONY ASSAULT', 'BURGLARY', 'GRAND LARCENY',
+                'GRAND LARCENY OF MOTOR VEHICLE', 'TOTAL')
+  
+  df[,features] <- lapply(df[,features], function(x) as.numeric(x))
+  
+  df <- df %>% mutate(num_parks = 1)
+  
+  df <- as_tibble(aggregate(x = df[,c(features,c('num_parks'))], by = list(df$BOROUGH), FUN = sum))
+  
+  
+  names(df)[1] <- 'BOROUGH'
+  
+  df$QUARTER <- q
+  
+  df$YEAR <- y
+  
+  return(df)
+}
+
+# q1_17 represents the data in the first quarter of 2017
+
+df <- agg(q1_17, 1, 2017)
+df <- rbind(df, agg(q2_17, 2, 2017))
+df <- rbind(df, agg(q3_17, 3, 2017))
+df <- rbind(df, agg(q4_17, 4, 2017))
+df <- rbind(df, agg(q1_18, 1, 2018))
+df <- rbind(df, agg(q2_18, 2, 2018))
+df <- rbind(df, agg(q3_18, 3, 2018))
+df <- rbind(df, agg(q4_18, 4, 2018))
+df <- rbind(df, agg(q1_19, 1, 2019))
+df <- rbind(df, agg(q2_19, 2, 2019))
+df <- rbind(df, agg(q3_19, 3, 2019))
+df <- rbind(df, agg(q4_19, 4, 2019))
+df <- rbind(df, agg(q1_20, 1, 2020))
+df <- rbind(df, agg(q2_20, 2, 2020))
+df <- rbind(df, agg(q3_20, 3, 2020))
+df <- rbind(df, agg(q4_20, 4, 2020))
+df <- rbind(df, agg(q1_21, 1, 2021))
+df <- rbind(df, agg(q2_21, 2, 2021))
+df <- rbind(df, agg(q3_21, 3, 2021))
+
+#write.csv(df,"park_crime.csv")
+```
