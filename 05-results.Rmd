@@ -2,13 +2,13 @@
 
 ```{r read in data_chapter5, include=FALSE}
 
-crime17 <- read_csv("data\\crime_17.csv", show_col_types = FALSE)
-crime18 <- read_csv("data\\crime_18.csv", show_col_types = FALSE)
-crime19 <- read_csv("data\\crime_19.csv", show_col_types = FALSE)
-crime20 <- read_csv("data\\crime_20.csv", show_col_types = FALSE)
-crime21 <- read_csv("data\\crime_21.csv", show_col_types = FALSE)
-covid <- read_csv("data\\cases-by-day.csv", show_col_types = FALSE)
-park_crime <- read_csv("data\\park_crime.csv", show_col_types = FALSE)
+crime17 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crime_17.csv", show_col_types = FALSE)
+crime18 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crime_18.csv", show_col_types = FALSE)
+crime19 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crime_19.csv", show_col_types = FALSE)
+crime20 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crime_20.csv", show_col_types = FALSE)
+crime21 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crime_21.csv", show_col_types = FALSE)
+covid <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/cases-by-day.csv", show_col_types = FALSE)
+park_crime <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/park_crime.csv", show_col_types = FALSE)
 
 crime17$date <- as.Date(crime17$date, format="%m/%d/%Y")
 crime18$date <- as.Date(crime18$date, format="%m/%d/%Y")
