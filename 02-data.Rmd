@@ -1,2 +1,17 @@
 # Data sources
 
+crime:
+https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i
+https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Current-Year-To-Date-/5uac-w243
+
+each row is a crime reported.
+features include: borough, precinct, datetime, crime type(felony, misdemeanor, violation), crime subtypes(for felony:7 major types...), 
+
+
+park crime:
+https://www1.nyc.gov/site/nypd/stats/crime-statistics/park-crime-stats.page 
+
+
+covid data:
+https://github.com/nychealth/coronavirus-data/tree/master/trends
+
