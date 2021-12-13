@@ -8,6 +8,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE,
 library(tidyverse)
 library(patchwork)
 library(readxl)
+library(zoo)
+library(lubridate)
 ```
 
 For crime data of all types from 2017 to 2021, we performed the following steps to clean the data:
@@ -19,7 +21,7 @@ For crime data of all types from 2017 to 2021, we performed the following steps 
 The following code demonstrates the workflow we applied to crime data in 2021. We also applied the same workflow to the data in 2017 - 2020 separately in order to save space.
 
 ```{r, crime data 2017-2021}
-df <- read_csv("D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\NYPD_Complaint_Data_Current__Year_To_Date_.csv", show_col_types = FALSE)
+df <- read_csv("NYPD_Complaint_Data_Current__Year_To_Date_.csv", show_col_types = FALSE)
 
 old_names <- c('ADDR_PCT_CD', 'CMPLNT_FR_DT', 'LAW_CAT_CD', 'OFNS_DESC')
 new_names <- c('pct', 'date', 'level', 'type')
@@ -57,29 +59,29 @@ For park crime data from 2017 to 2021, we performed the following steps to clean
 5. Combine park crime in all quarters from 2017 to 2021 into one single csv
 
 ```{r, read in park crime data 2017 - 2021, include=FALSE}
-q1_17 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q1-2017.xlsx', skip = 3)
-q2_17 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q2-2017.xlsx', skip = 3)
-q3_17 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q3-2017.xlsx', skip = 3)
-q4_17 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q4-2017.xlsx', skip = 3)
+q1_17 <- read_excel('nyc-park-crime-stats-q1-2017.xlsx', skip = 3)
+q2_17 <- read_excel('nyc-park-crime-stats-q2-2017.xlsx', skip = 3)
+q3_17 <- read_excel('nyc-park-crime-stats-q3-2017.xlsx', skip = 3)
+q4_17 <- read_excel('nyc-park-crime-stats-q4-2017.xlsx', skip = 3)
 
-q1_18 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q1-2018.xlsx', skip = 3)
-q2_18 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q2-2018.xlsx', skip = 4)
-q3_18 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q3-2018.xlsx', skip = 3)
-q4_18 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q4-2018.xlsx', skip = 3)
+q1_18 <- read_excel('nyc-park-crime-stats-q1-2018.xlsx', skip = 3)
+q2_18 <- read_excel('nyc-park-crime-stats-q2-2018.xlsx', skip = 4)
+q3_18 <- read_excel('nyc-park-crime-stats-q3-2018.xlsx', skip = 3)
+q4_18 <- read_excel('nyc-park-crime-stats-q4-2018.xlsx', skip = 3)
 
-q1_19 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q1-2019.xlsx', skip = 3)
-q2_19 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q2-2019.xlsx', skip = 3)
-q3_19 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q3-2019.xlsx', skip = 3)
-q4_19 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q4-2019.xlsx', skip = 3)
+q1_19 <- read_excel('nyc-park-crime-stats-q1-2019.xlsx', skip = 3)
+q2_19 <- read_excel('nyc-park-crime-stats-q2-2019.xlsx', skip = 3)
+q3_19 <- read_excel('nyc-park-crime-stats-q3-2019.xlsx', skip = 3)
+q4_19 <- read_excel('nyc-park-crime-stats-q4-2019.xlsx', skip = 3)
 
-q1_20 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q1-2020a.xlsx', skip = 3)
-q2_20 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q2-2020.xlsx', skip = 3)
-q3_20 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q3-2020.xlsx', skip = 3)
-q4_20 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q4-2020.xlsx', skip = 3)
+q1_20 <- read_excel('nyc-park-crime-stats-q1-2020a.xlsx', skip = 3)
+q2_20 <- read_excel('nyc-park-crime-stats-q2-2020.xlsx', skip = 3)
+q3_20 <- read_excel('nyc-park-crime-stats-q3-2020.xlsx', skip = 3)
+q4_20 <- read_excel('nyc-park-crime-stats-q4-2020.xlsx', skip = 3)
 
-q1_21 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q1-2021.xlsx', skip = 4)
-q2_21 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q2-2021.xlsx', skip = 3)
-q3_21 <- read_excel('D:\\吴天昊\\哥大\\fall 2021\\EDA\\final project\\nyc-park-crime-stats-q3-2021.xlsx', skip = 3)
+q1_21 <- read_excel('nyc-park-crime-stats-q1-2021.xlsx', skip = 4)
+q2_21 <- read_excel('nyc-park-crime-stats-q2-2021.xlsx', skip = 3)
+q3_21 <- read_excel('nyc-park-crime-stats-q3-2021.xlsx', skip = 3)
 ```
 
 ```{r, read in park crime data 2017 - 2021, include=FALSE}

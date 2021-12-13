@@ -1,1 +1,195 @@
 # Results
+
+```{r read in data_chapter5, include=FALSE}
+
+crime17 <- read_csv("data\\crime_17.csv", show_col_types = FALSE)
+crime18 <- read_csv("data\\crime_18.csv", show_col_types = FALSE)
+crime19 <- read_csv("data\\crime_19.csv", show_col_types = FALSE)
+crime20 <- read_csv("data\\crime_20.csv", show_col_types = FALSE)
+crime21 <- read_csv("data\\crime_21.csv", show_col_types = FALSE)
+covid <- read_csv("data\\cases-by-day.csv", show_col_types = FALSE)
+park_crime <- read_csv("data\\park_crime.csv", show_col_types = FALSE)
+
+crime17$date <- as.Date(crime17$date, format="%m/%d/%Y")
+crime18$date <- as.Date(crime18$date, format="%m/%d/%Y")
+crime19$date <- as.Date(crime19$date, format="%m/%d/%Y")
+crime20$date <- as.Date(crime20$date, format="%m/%d/%Y")
+crime21$date <- as.Date(crime21$date, format="%m/%d/%Y")
+covid$date_of_interest <- as.Date(covid$date_of_interest, format="%m/%d/%Y")
+```
+
+### 1. Annual Pattern of Major Crime Types
+
+Firstly, we wanted to visualize the patterns of three major types of crimes in NYC: Felony, Misdemeanor, and Violation. We plotted the daily crime counts from 2017 to 2021, and we were curious about: What is the annual pattern of different types of crime? Does the pattern fluctuates over years?
+
+```{r time series, fig.width=15}
+df <- rbind(crime17,crime18,crime19,crime20,crime21) %>% 
+  group_by(date,level) %>% 
+  summarise(count = n()) %>% 
+  ungroup()
+
+g <- ggplot() + 
+  geom_line(df, mapping = aes(date, count, color = level)) + 
+  geom_smooth(df[df$level == "FELONY",], mapping = aes(date, count), se = FALSE) +
+  geom_smooth(df[df$level == "MISDEMEANOR",], mapping = aes(date, count), se = FALSE) +
+  geom_smooth(df[df$level == "VIOLATION",], mapping = aes(date, count), se = FALSE) +
+  ggtitle("NYC Crimes") +
+  labs (x = "", y = "Count") +
+  theme_grey(16) +
+  theme(legend.title = element_blank())
+g
+```
+
+**Observations & Analysis:**
+
+1. There is a clear and stable annual pattern from 2017 to 2019: crime counts first increase and reach the highest level in the middle of a year. Then they gradually decrease to their original level at the beginning of each year. The average level of crime counts is stable over years. 
+2. All three types of crime follow the pattern. However, the level of Misdemeanor at the very beginning of each year is dramatically high, and it drops to its normal level within a few days.
+3. There is a sharp decline of crime counts around March 2020. Although the annual pattern of "first increase then decrease" still holds after that, the overall level of crime counts has been increasing since then. We think that the pattern shown in 2017 - 2019 is the normal pattern while the fluctuations in 2020 and 2021 might be caused by COVID-19. 
+4. The crime counts of Felony reach the highest level in 5 years soon after the steep decrease in March 2020.
+
+### 2. Crime Counts vs COVID-19 New Cases
+
+Here we plotted the daily crime counts in 2020 and 2021 together with COVID daily new cases in NYC to explore the impacts of COVID-19 on crime counts. 
+
+```{r covid impacts, fig.width=15}
+df <- rbind(crime20, crime21) %>% 
+  group_by(date,level) %>% 
+  summarise(count = n()) %>% 
+  ungroup()
+
+ggplot() + 
+  geom_line(df, mapping = aes(date, count, color = level)) +
+  geom_line(covid, mapping = aes(date_of_interest, CASE_COUNT/5, linetype = "COVID"), color = "darkorchid1") +
+  scale_y_continuous("Crime Count", sec.axis = sec_axis(~ (.)*5, name = "Covid Count")) +
+  ggtitle("NYC Crimes vs Covid") +
+  labs (x = "") +
+  theme_grey(16) +
+  theme(legend.title = element_blank())
+```
+
+**Observations & Analysis:**
+
+The steep decrease in crime counts happens soon after COVID-19 breaks out in NYC. As COVID daily new cases reach the first peak and start to decrease, crime counts raise up. However, as COVID-19 breaks out again in 2021, there is little fluctuation in crime counts. 
+Our analysis is that: human activities were severely constrained due to the breakout of COVID-19, which led to the sharp decrease in crime counts. As the situation got better and people became active again, crime counts raised back to their original levels as a result. Since vaccines became available at the beginning of 2021 and people had already adapted to the existence of COVID-19, the second breakout of COVID had little impact on human activities including criminal behaviors. 
+
+### 3. Felony Counts vs COVID-19 New Cases
+
+The plots above could not explain the sharp increase in Felony counts after the first breakout of COVID-19. Therefore, we decided to dive into the relationship between Felony Counts and COVID Cases. We started with analyzing the patterns of Felony Counts in different boroughs.
+
+```{r felony in different boroughs, fig.width=10}
+df <- crime20 %>% 
+  filter(level == 'FELONY') %>%
+  group_by(date,borough) %>% 
+  summarise(count = n()) %>% 
+  ungroup()
+
+covid20 <- covid %>% filter(year(date_of_interest) == 2020)
+
+ggplot() + 
+  geom_line(df, mapping = aes(date, count, color = borough)) +
+  geom_line(covid20, mapping = aes(date_of_interest, CASE_COUNT/10, linetype = "COVID"), color = "darkorchid1") +
+  scale_y_continuous("Felony Count", sec.axis = sec_axis(~ (.)*10, name = "Covid Count")) +
+  ggtitle("NYC Felony vs Covid") +
+  labs (x = "") +
+  theme_grey(16) +
+  theme(legend.title = element_blank())
+
+```
+
+**Observations & Analysis:**
+
+From the plot we can see that the breakout of COVID-19 has little impact on the felony counts in Staten island. Although there is an increase in the other 4 boroughs, only the felony counts in Manhattan boom to a dramatically high level. 
+
+```{r felony of different types, fig.width=10}
+felony_type <- function(x) {
+  if (x %in% c('GRAND LARCENY OF MOTOR VEHICLE', 'ROBBERY', 'BURGLARY', 'GRAND LARCENY', 'MURDER & NON-NEGL. MANSLAUGHTER', 'RAPE', 'FELONY ASSAULT')) {
+    return(x)
+  } else {
+    return('NON-MAJOR FELONY')
+  }
+}
+
+df <- crime20 %>% 
+  filter(level == "FELONY") 
+
+df$type <- unlist(lapply(df$type, felony_type))
+
+df <- df %>%
+  group_by(date,type) %>% 
+  summarise(count = n()) %>% 
+  ungroup()
+
+
+ggplot() + 
+  geom_line(df, mapping = aes(date, count, color = type)) +
+  geom_line(covid20, mapping = aes(date_of_interest, CASE_COUNT/10, linetype = "COVID"), color = "darkorchid1") +
+  scale_y_continuous("Felony Count", sec.axis = sec_axis(~ (.)*10, name = "Covid Count")) +
+  ggtitle("NYC Felony vs Covid") +
+  labs (x = "") +
+  theme_grey(16) +
+  theme(legend.title = element_blank())
+
+```
+
+**Observations & Analysis:**
+
+From the plot of different felony types we can see that the sharp increase is mainly contributed by "Burglary". 
+
+Synthesizing the findings we have, we conclude that: the breakout of COVID-19 greatly constrained human activities and therefore caused economic difficulties for many people. As a result, some people would commit crimes once the situation got better. Burglary is one of the most straightforward way to get money and Manhattan is the richest borough in NYC. Therefore, most criminals chose to commit burglaries in Manhattan.  
+
+### 4. Park Crime
+
+Park Crime dataset consists of the counts of 7 major felonies that happened in parks and corresponding time and location information. Due to its outdoor nature, we believe that park crime should be highly correlated with seasons. Here we plotted the park crime counts in each quarter.
+
+```{r park crimes-felony-type, fig.width=10}
+func <- function(x, y) {
+  return(as.yearqtr(paste(x, y, sep = '-')))
+}
+
+park_crime$time <- mapply(func, park_crime$YEAR, park_crime$QUARTER)
+features <- c("BOROUGH","MURDER","RAPE","ROBBERY","BURGLARY","GRAND LARCENY","GRAND LARCENY OF MOTOR VEHICLE","time") 
+
+df <- park_crime[,features] %>% gather(key = level, value = count, -BOROUGH, -time)
+
+df <- df %>% 
+  group_by(time,level) %>% 
+  summarise(count = sum(count)) %>% 
+  ungroup()
+
+g <- ggplot() + 
+  geom_point(df, mapping = aes(time, count, color = level)) +
+  geom_line(df, mapping = aes(time, count, color = level)) + 
+  ggtitle("NYC Park Crimes") +
+  scale_x_discrete(limits = df$time, labels = unlist(lapply(df$time, function(x) format(as.yearqtr(x), "%Y-Q%q")))) +
+  labs (x = "", y = "Count") +
+  theme_grey(16) +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90))
+g
+```
+
+```{r park crimes-felony-area, fig.width=15}
+df <- park_crime[,features] %>% gather(key = level, value = count, -BOROUGH, -time)
+
+df <- df %>% 
+  group_by(time,BOROUGH) %>% 
+  summarise(count = sum(count)) %>% 
+  ungroup()
+
+g <- ggplot() + 
+  geom_point(df, mapping = aes(time, count, color = BOROUGH)) +
+  geom_line(df, mapping = aes(time, count, color = BOROUGH)) + 
+  ggtitle("NYC Park Crimes") +
+  scale_x_discrete(limits = df$time, labels = unlist(lapply(df$time, function(x) format(as.yearqtr(x), "%Y-Q%q")))) +
+  labs (x = "", y = "Count") +
+  theme_grey(16) +
+  theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90))
+g
+```
+
+**Observations & Analysis:**
+
+1. From the plots we could see that park crime does have a very strong correlation with seasons. The count in the third quarter (summer) is the highest while the count in winter is the lowest, which is aligned with the pattern of human activities. 
+2. Grand Larceny contributes to the largest portion of park crime counts and Robbery is the second.
+3. Among the 5 boroughs, Manhattan has the highest level of park crime counts.
+4. The breakout of COVID-19 also led to a sharp decrease in park crime counts, but was not followed up with a sharp increase. We think the reason is that human activities in many parks were still quite constrained even after the situation became better.
+
