@@ -1,0 +1,150 @@
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+</style>
+<body>
+
+<script src="https://d3js.org/d3.v7.js"></script>
+<script>
+var margin = {top: 20, right: 40, bottom: 100, left: 40},
+    width = 800 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+var parseTime = d3.timeParse("%m/%d/%Y");
+
+var x = d3.scaleTime().range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+
+var covid_case = d3.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.cases_per_5people); });
+
+var felony = d3.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.felony); });
+
+var misdemeanor = d3.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.misdem); });
+
+var violation = d3.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.violat); });
+
+d3.csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crimeNcov.csv").then(function(data) {
+
+  data.forEach(function(d) {
+      d.date = parseTime(d.date);
+      d.cases_per_5people = +d.cases_per_5people;
+      d.felony = +d.felony;
+      d.midem = +d.misdem;
+      d.violat = +d.violat;
+  });
+
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+  y.domain([0, d3.max(data, function(d) {
+	  return Math.max(d.cases_per_5people, d.felony, d.misdem, d.violat); })]);
+
+  svg.append("path")
+      .data([data])
+      .attr("class", "line")
+      .attr("id", "covidline")
+      .style("stroke", "steelblue")
+      .attr("d", covid_case);
+
+  svg.append("path")
+      .data([data])
+      .attr("class", "line")
+      .attr("id", "felline")
+      .style("stroke", "red")
+      .attr("d", felony);
+      
+  svg.append("path")
+      .data([data])
+      .attr("class", "line")
+      .attr("id", "misline")
+      .style("stroke", "orange")
+      .attr("d", misdemeanor);
+      
+  svg.append("path")
+      .data([data])
+      .attr("class", "line")
+      .attr("id", "violine")
+      .style("stroke", "green")
+      .attr("d", violation);
+
+  svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  svg.append("g")
+      .call(d3.axisLeft(y));
+  
+  svg.append("text")
+     .attr("x", 0)             
+     .attr("y", height + 40)    
+     .attr("class", "legend")
+     .style("fill", "steelblue")         
+     .on("click", function(){
+       var active = covidline.active ? false : true,
+       newOpacity = active ? 0 : 1;
+       d3.select("#covidline").style("opacity", newOpacity);
+       covidline.active = active;
+     })
+     .text("Covid Cases Per 5 People");
+  
+  svg.append("text")
+     .attr("x", 0)             
+     .attr("y", height + 60)    
+     .attr("class", "legend")
+     .style("fill", "red")         
+     .on("click", function(){
+       var active = felline.active ? false : true,
+       newOpacity = active ? 0 : 1;
+       d3.select("#felline").style("opacity", newOpacity);
+       felline.active = active;
+     })
+     .text("Felony Count");
+  
+  svg.append("text")
+     .attr("x", 0)             
+     .attr("y", height + 80)    
+     .attr("class", "legend")
+     .style("fill", "orange")         
+     .on("click", function(){
+       var active = misline.active ? false : true,
+       newOpacity = active ? 0 : 1;
+       d3.select("#misline").style("opacity", newOpacity);
+       misline.active = active;
+     })
+     .text("Midemeanor Count");
+  
+  svg.append("text")
+     .attr("x", 0)             
+     .attr("y", height + 100)    
+     .attr("class", "legend")
+     .style("fill", "green")         
+     .on("click", function(){
+       var active = violine.active ? false : true,
+       newOpacity = active ? 0 : 1;
+       d3.select("#violine").style("opacity", newOpacity);
+       violine.active = active;
+     })
+     .text("Violation Count");
+  
+});
+</script>
+</body>

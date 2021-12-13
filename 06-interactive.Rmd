@@ -1,3 +1,11 @@
 # Interactive component
 
+We are curious about how the spread of COVID influenced crime stats. Previous time-series graphs have suggest several note-worthy trends in crime counts with respect to COVID cases, such as the fluctuant felony counts in early 2020. Nonetheless, those graphs suffer from messy presentations - multiple overlapping lines could hinder readers' interpretation.
 
+Below is an interactive time-series line chart of crime counts by level together with COVID cases per 5 people.
+
+<iframe src="linechart.html" width="850" height="520"></iframe>
+
+Clicking on the legend will show/hide the corresponding lines. You can choose any lines of interest to display and obtain an intuitive visualization of their relationship.
+
+Reference: https://gist.github.com/d3noob/6b5b867eb5a4230443c07779440ce3bc

@@ -4,6 +4,7 @@
 library(tidyverse)
 library(zoo)
 library(lubridate)
+library(patchwork)
 
 crime17 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crime_17.csv", show_col_types = FALSE)
 crime18 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crime_18.csv", show_col_types = FALSE)
@@ -12,6 +13,9 @@ crime20 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/d
 crime21 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crime_21.csv", show_col_types = FALSE)
 covid <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/cases-by-day.csv", show_col_types = FALSE)
 park_crime <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/park_crime.csv", show_col_types = FALSE)
+covid_boro <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/by-boro.csv", show_col_types = FALSE)
+
+crime_all <- rbind(crime17, crime18, crime19, crime20, crime21)
 
 crime17$date <- as.Date(crime17$date, format="%m/%d/%Y")
 crime18$date <- as.Date(crime18$date, format="%m/%d/%Y")
@@ -50,9 +54,75 @@ g
 3. There is a sharp decline of crime counts around March 2020. Although the annual pattern of "first increase then decrease" still holds after that, the overall level of crime counts has been increasing since then. We think that the pattern shown in 2017 - 2019 is the normal pattern while the fluctuations in 2020 and 2021 might be caused by COVID-19. 
 4. The crime counts of Felony reach the highest level in 5 years soon after the steep decrease in March 2020.
 
-## Crime Counts vs COVID-19 New Cases
+## Crime Reports in Relation to Boroughs
 
-Here we plotted the daily crime counts in 2020 and 2021 together with COVID daily new cases in NYC to explore the impacts of COVID-19 on crime counts. 
+We plotted the following bar charts to find clues about the relationship between crime data and different areas.
+
+```{r}
+bar_df <- crime_all %>%
+  group_by(borough, level, year) %>%
+  summarise(count = n()) %>% 
+  ungroup()
+
+crime_tb <- bar_df[bar_df$borough == "BRONX", ] %>%
+  mutate(area = 109.3) %>%
+  mutate(rate = count/area)
+crime_b <- bar_df[bar_df$borough == "BROOKLYN", ] %>%
+  mutate(area = 179.7) %>%
+  mutate(rate = count/area)
+crime_m <- bar_df[bar_df$borough == "MANHATTAN", ] %>%
+  mutate(area = 58.8) %>%
+  mutate(rate = count/area)
+crime_q <- bar_df[bar_df$borough == "QUEENS", ] %>%
+  mutate(area = 281.5) %>%
+  mutate(rate = count/area)
+crime_s <- bar_df[bar_df$borough == "STATEN ISLAND", ] %>%
+  mutate(area = 148.9) %>%
+  mutate(rate = count/area)
+bar_df2 <- rbind(crime_tb, crime_b, crime_m, crime_q, crime_s)
+```
+```{r}
+g1 <- ggplot(bar_df, aes(x = reorder(borough, -count), y = count, fill = level)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~year) +
+  ggtitle("NYC Crime Count by Borough, Level & Year") +
+  xlab("Borough") +
+  ylab("Crime Case Count") +
+  guides(fill=guide_legend("Crime Level")) +
+  theme(axis.text.x = element_text(size = 4, angle = 50, hjust = 1))
+
+g1
+```
+
+**Observations & Analysis:**
+
+1. Over the past 5 years, reported crime cases of NYC's 5 boroughs have the following order: Brooklyn > Manhattan > Bronx > Queens > Staten Island.
+2. Crime count shows a decreasing trend in general.
+3. The ratio of felony cases with respect to total cases has been increasing since 2017.
+
+```{r}
+g2 <- ggplot(bar_df2, aes(x = reorder(borough, -rate), y = rate, fill = level)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~year) +
+  ggtitle("NYC Crime Rates by Borough, Level & Year, Adjusted by Area (sq. km)") +
+  xlab("Borough") +
+  ylab("Crime Rate") +
+  guides(fill=guide_legend("Crime Level")) +
+  theme(axis.text.x = element_text(size = 4, angle = 50, hjust = 1))
+
+g2
+```
+
+**Observations & Analysis:**
+
+1. The crime rate displays a slightly different order: Manhattan > Bronx > Brooklyn > Queens > Staten Island. Manhattan becomes the most crime-dense area, with crime rate largely surpassing every other borough since 2017.
+2. We can still observe a decreasing trend, which is consistent with the previous graph.
+
+An interesting observation is that the number of felony reports remained relatively stable over the past five years (compared to the other two major levels). Thus, the ratio of felony cases with respect to total counts has shown an uprising pattern, in contrast to the trend of total crime counts.
+
+## Crime Counts vs COVID-19 Cases
+
+Here we plotted the daily crime counts in 2020 and 2021 together with COVID daily new cases in NYC to explore the impacts of COVID-19 on crime counts.
 
 ```{r covid impacts, fig.width=15}
 df <- rbind(crime20, crime21) %>% 
@@ -70,14 +140,126 @@ ggplot() +
   theme(legend.title = element_blank())
 ```
 
+We also plotted reductions in crime counts by borough, and compared it with total COVID cases by borough.
+
+```{r}
+covid_boro <- covid_boro[-6,]
+
+gc <- ggplot(covid_boro, aes(x = BOROUGH_GROUP, y = CONFIRMED_CASE_COUNT)) +
+  geom_col(position = "dodge", fill = "#F8766D") +
+  xlab("Borough") +
+  ylab("Confirmed Case Count") +
+  ggtitle("NYC Total Covid Cases by Borough, 2020-2021")
+
+crime_c20 <- crime_all[crime_all$year >= 2020, ]
+crime_f20 <- crime_c20[crime_c20$level == "FELONY", ] %>%
+  group_by(borough) %>%
+  summarize(count = n()) %>%
+  mutate(ann = count/2) %>%
+  ungroup()
+crime_s20 <- crime_c20 %>%
+  group_by(borough) %>%
+  summarize(count = n()) %>%
+  mutate(ann = count/2) %>%
+  ungroup()
+
+crime_c17 <- crime_all[crime_all$year < 2020, ]
+crime_f17 <- crime_c17[crime_c17$level == "FELONY", ] %>%
+  group_by(borough) %>%
+  summarize(count = n()) %>%
+  mutate(ann = count/3) %>%
+  ungroup()
+crime_s17 <- crime_c17 %>%
+  group_by(borough) %>%
+  summarize(count = n()) %>%
+  mutate(ann = count/3) %>%
+  ungroup()
+
+crime_mf <- merge(crime_f20, crime_f17, "borough") %>%
+  mutate(cate = "Felony")
+crime_mt <- merge(crime_s20, crime_s17, "borough") %>%
+  mutate(cate = "Total")
+crime_red <- rbind(crime_mt, crime_mf) %>%
+  mutate(dif = ann.y - ann.x)
+
+gc <- ggplot(covid_boro, aes(x = BOROUGH_GROUP, y = CONFIRMED_CASE_COUNT)) +
+  geom_col(position = "dodge", fill = "#F8766D") +
+  xlab("Borough") +
+  ylab("Confirmed Case Count") +
+  ggtitle("NYC Total Covid Cases by Borough") +
+  theme(axis.text.x = element_text(size = 4))
+
+gbar <- ggplot(crime_red, aes(x = borough, y = dif, fill = cate)) +
+  geom_col(position = "identity") +
+  ggtitle("Decrease in NYC Average Annual Crime Counts (Before/After 2020)") +
+  xlab("Borough") +
+  ylab("Crime Counts") +
+  guides(fill=guide_legend("Count")) +
+  theme(axis.text.x = element_text(size = 4))
+```
+
+```{r}
+gc + gbar
+```
+
 **Observations & Analysis:**
 
 The steep decrease in crime counts happens soon after COVID-19 breaks out in NYC. As COVID daily new cases reach the first peak and start to decrease, crime counts raise up. However, as COVID-19 breaks out again in 2021, there is little fluctuation in crime counts. 
+Still, COVID has contributed to lower crime counts in the long run. The bar charts show that annual crime counts has dropped by large numbers since the beginning of 2020. Further, excluding Queens, reductions in felony & total crime counts are approximately proportionate to total COVID cases. 
 Our analysis is that: human activities were severely constrained due to the breakout of COVID-19, which led to the sharp decrease in crime counts. As the situation got better and people became active again, crime counts raised back to their original levels as a result. Since vaccines became available at the beginning of 2021 and people had already adapted to the existence of COVID-19, the second breakout of COVID had little impact on human activities including criminal behaviors. 
 
-## Felony Counts vs COVID-19 New Cases
+## Felony Counts vs COVID-19 Cases
 
-The plots above could not explain the sharp increase in Felony counts after the first breakout of COVID-19. Therefore, we decided to dive into the relationship between Felony Counts and COVID Cases. We started with analyzing the patterns of Felony Counts in different boroughs.
+Felony counts has shown the most interesting pattern in the previous graph. Therefore, we decided to dive into the relationship between Felony Counts and COVID Cases. We started with heat maps of major felonies by boroughs.
+
+```{r}
+crime_t17 <- crime_all[crime_all$year < 2020, ]
+crime_t17 <- crime_t17[crime_t17$level == "FELONY", ] %>%
+  select(borough, type) %>%
+  group_by(borough, type) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  mutate(annual = count/3)
+
+crime_t20 <- crime_all[crime_all$year >= 2020, ]
+crime_t20 <- crime_t20[crime_t20$level == "FELONY", ] %>%
+  select(borough, type) %>%
+  group_by(borough, type) %>%
+  summarize(count = n()) %>%
+  ungroup() %>%
+  mutate(annual = count/2)
+
+g1 <- ggplot(crime_t17, aes(x = borough, y = reorder(type, -annual), fill = annual)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "grey85", high = "red", na.value = "black") +
+  xlab("Borough") +
+  ylab("Felony Type") +
+  ggtitle("2017-2019") +
+  guides(fill=guide_legend("Count")) +
+  theme_bw() +
+  theme(axis.text.y = element_text(size = 5), axis.text.x = element_text(size = 5), legend.position = 'none')
+
+g2 <- ggplot(crime_t20, aes(x = borough, y = reorder(type, -annual), fill = annual)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "grey85", high = "red", na.value = "black", breaks=seq(0,16000,4000), limits=c(0, 16000)) +
+  xlab("Borough") +
+  ylab("") +
+  ggtitle("2020-2021") +
+  guides(fill=guide_legend("Count")) +
+  theme_bw() +
+  theme(axis.text.y = element_text(size = 5), axis.text.x = element_text(size = 5))
+```
+
+```{r, fig.width=12}
+g3 <- g1 + g2
+g3 + plot_annotation(title = 'NYC Average Annual Felony Reports by Borough')
+```
+
+**Observations & Analysis:**
+
+It is evident from the heat maps that average annual felony reports decreased after 2019. Nonetheless, there has been a big growth in burglary cases, as it became the third mostly reported felony.
+
+The plots above could not explain the sharp increase in Felony counts after the first breakout of COVID-19. We continued to analyze the patterns of Felony Counts in different boroughs.
 
 ```{r felony in different boroughs, fig.width=10}
 df <- crime20 %>% 

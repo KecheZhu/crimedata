@@ -4,8 +4,9 @@ data-transformation
 missing-values
 results
 annual-pattern-of-major-crime-types
-crime-counts-vs-covid-19-new-cases
-felony-counts-vs-covid-19-new-cases
+crime-reports-in-relation-to-boroughs
+crime-counts-vs-covid-19-cases
+felony-counts-vs-covid-19-cases
 park-crime
 interactive-component
 conclusion
