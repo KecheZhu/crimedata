@@ -1,17 +1,40 @@
 # Data sources
 
-crime:
+## Crime data
 https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i
 https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Current-Year-To-Date-/5uac-w243
 
-each row is a crime reported.
-features include: borough, precinct, datetime, crime type(felony, misdemeanor, violation), crime subtypes(for felony:7 major types...), 
+These are data sets of crime reports recorded and published by NYPD.
+
+Every entry is a crime report. Variables of interest include: borough, precinct, datetime, crime type(felony, misdemeanor, violation), crime sub-types (Ex. for felony: grand larceny, burglary, murder, etc.).
+
+We cleaned the data sets and extracted only reports after Jan 1, 2017. Total number of records after cleaning is 2106968.
 
 
-park crime:
+## Park crime data
 https://www1.nyc.gov/site/nypd/stats/crime-statistics/park-crime-stats.page 
 
+This is a data set of crime counts in every park in NYC. It is recorded and published by NYPD.
 
-covid data:
-https://github.com/nychealth/coronavirus-data/tree/master/trends
+Each entry records the crime counts in one park. Variables of interest include: park, borough, crime counts by type (murder, rape, robbery, etc.).
 
+We combined park crime data from 2017 to 2021. Total number of records after cleaning is 114.
+
+
+## COVID data
+1. https://github.com/nychealth/coronavirus-data/blob/master/trends/cases-by-day.csv
+
+This data set contains citywide and borough-specific daily counts of COVID cases. It is recorded and published by NYC Department of Health and Mental Hygiene.
+
+Each entry records the new COVID case counts on one day. Variables of interest include: date, case count.
+
+This data set includes data since February 29, 2020 based on the date that the Health Department classifies as the start of the COVID-19 outbreak in NYC. Total number of records is 648.
+
+
+2. https://github.com/nychealth/coronavirus-data/blob/master/totals/by-boro.csv
+
+This data set contains citywide and borough-specific total counts of COVID cases. 
+
+Each entry records the total COVID case counts in one borough. Variables of interest include: borough, case count.
+
+Total number of records is 6 (5 boroughs and citywide).

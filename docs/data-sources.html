@@ -138,7 +138,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#crime-data"><i class="fa fa-check"></i><b>2.1</b> Crime data</a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#park-crime-data"><i class="fa fa-check"></i><b>2.2</b> Park crime data</a></li>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#covid-data"><i class="fa fa-check"></i><b>2.3</b> COVID data</a></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
 <li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
@@ -172,16 +177,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="data-sources" class="section level1" number="2">
 <h1><span class="header-section-number">Chapter 2</span> Data sources</h1>
-<p>crime:
-<a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i" class="uri">https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i</a>
+<div id="crime-data" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Crime data</h2>
+<p><a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i" class="uri">https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i</a>
 <a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Current-Year-To-Date-/5uac-w243" class="uri">https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Current-Year-To-Date-/5uac-w243</a></p>
-<p>each row is a crime reported.
-features include: borough, precinct, datetime, crime type(felony, misdemeanor, violation), crime subtypes(for felony:7 major types…),</p>
-<p>park crime:
-<a href="https://www1.nyc.gov/site/nypd/stats/crime-statistics/park-crime-stats.page" class="uri">https://www1.nyc.gov/site/nypd/stats/crime-statistics/park-crime-stats.page</a></p>
-<p>covid data:
-<a href="https://github.com/nychealth/coronavirus-data/tree/master/trends" class="uri">https://github.com/nychealth/coronavirus-data/tree/master/trends</a></p>
+<p>These are data sets of crime reports recorded and published by NYPD.</p>
+<p>Every entry is a crime report. Variables of interest include: borough, precinct, datetime, crime type(felony, misdemeanor, violation), crime sub-types (Ex. for felony: grand larceny, burglary, murder, etc.).</p>
+<p>We cleaned the data sets and extracted only reports after Jan 1, 2017. Total number of records after cleaning is 2106968.</p>
+</div>
+<div id="park-crime-data" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Park crime data</h2>
+<p><a href="https://www1.nyc.gov/site/nypd/stats/crime-statistics/park-crime-stats.page" class="uri">https://www1.nyc.gov/site/nypd/stats/crime-statistics/park-crime-stats.page</a></p>
+<p>This is a data set of crime counts in every park in NYC. It is recorded and published by NYPD.</p>
+<p>Each entry records the crime counts in one park. Variables of interest include: park, borough, crime counts by type (murder, rape, robbery, etc.).</p>
+<p>We combined park crime data from 2017 to 2021. Total number of records after cleaning is 114.</p>
+</div>
+<div id="covid-data" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> COVID data</h2>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/nychealth/coronavirus-data/blob/master/trends/cases-by-day.csv" class="uri">https://github.com/nychealth/coronavirus-data/blob/master/trends/cases-by-day.csv</a></li>
+</ol>
+<p>This data set contains citywide and borough-specific daily counts of COVID cases. It is recorded and published by NYC Department of Health and Mental Hygiene.</p>
+<p>Each entry records the new COVID case counts on one day. Variables of interest include: date, case count.</p>
+<p>This data set includes data since February 29, 2020 based on the date that the Health Department classifies as the start of the COVID-19 outbreak in NYC. Total number of records is 648.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><a href="https://github.com/nychealth/coronavirus-data/blob/master/totals/by-boro.csv" class="uri">https://github.com/nychealth/coronavirus-data/blob/master/totals/by-boro.csv</a></li>
+</ol>
+<p>This data set contains citywide and borough-specific total counts of COVID cases.</p>
+<p>Each entry records the total COVID case counts in one borough. Variables of interest include: borough, case count.</p>
+<p>Total number of records is 6 (5 boroughs and citywide).</p>
 
+</div>
 </div>
             </section>
 

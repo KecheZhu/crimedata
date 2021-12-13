@@ -6,3 +6,14 @@ site: bookdown::bookdown_site
 ---
 
 # Introduction
+
+Crimes are closely related to people's lives. We believe that knowing the patterns of crimes can help establish more efficient ways to lower crime rates. Hence, we plan to collect crime data in NYC and attempt to solve these questions concerning the patterns of crimes:
+
+1. Does season have an impact on crime rates? Does crime rate fluctuate throughout the year in a certain pattern?
+2. What are the trends of crime rates in different areas and of different crimes?
+
+COVID is another factor that brings down people's life quality. Could it also be another contributing factor for crime patterns besides space and time? If so, how does it affect crime rates?
+
+3. Does the outburst of COVID-19 contribute to spikes in crimes?
+
+Aiming to solve these questions, we will visualize and examine crime and COVID data from NYC's 5 boroughs - Bronx, Brooklyn, Manhattan, Queens, and Staten Island. The data sets are provided by NYPD and NYC Department of Health and Mental Hygiene. Hopefully, we will be able to observe some valuable patterns and generate insight on how to deal with crimes.

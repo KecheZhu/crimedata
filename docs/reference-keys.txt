@@ -1,5 +1,8 @@
 introduction
 data-sources
+crime-data
+park-crime-data
+covid-data
 data-transformation
 missing-values
 results
