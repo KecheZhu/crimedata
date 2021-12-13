@@ -20,7 +20,8 @@ For crime data of all types from 2017 to 2021, we performed the following steps 
 
 The following code demonstrates the workflow we applied to crime data in 2021. We also applied the same workflow to the data in 2017 - 2020 separately in order to save space.
 
-```{r, crime data 2017-2021}
+```{r, crime data 2017-2021, eval=FALSE}
+
 df <- read_csv("NYPD_Complaint_Data_Current__Year_To_Date_.csv", show_col_types = FALSE)
 
 old_names <- c('ADDR_PCT_CD', 'CMPLNT_FR_DT', 'LAW_CAT_CD', 'OFNS_DESC')
@@ -47,7 +48,8 @@ find_boro <- function(pct){
 }
 
 df$borough <- unlist(lapply(df$pct, function(x) find_boro(x)))
-#write.csv(df,"crime_21.csv")
+write.csv(df,"crime_21.csv")
+
 ```
 
 For park crime data from 2017 to 2021, we performed the following steps to clean the data:
@@ -58,7 +60,7 @@ For park crime data from 2017 to 2021, we performed the following steps to clean
 4. Specify quarter and year
 5. Combine park crime in all quarters from 2017 to 2021 into one single csv
 
-```{r, read in park crime data 2017 - 2021, include=FALSE}
+```{r, read in park crime data 2017 - 2021, eval=FALSE, include=FALSE}
 q1_17 <- read_excel('nyc-park-crime-stats-q1-2017.xlsx', skip = 3)
 q2_17 <- read_excel('nyc-park-crime-stats-q2-2017.xlsx', skip = 3)
 q3_17 <- read_excel('nyc-park-crime-stats-q3-2017.xlsx', skip = 3)
@@ -84,7 +86,7 @@ q2_21 <- read_excel('nyc-park-crime-stats-q2-2021.xlsx', skip = 3)
 q3_21 <- read_excel('nyc-park-crime-stats-q3-2021.xlsx', skip = 3)
 ```
 
-```{r, park crime data 2017 - 2021}
+```{r, park crime data 2017 - 2021, eval=FALSE}
 
 agg <- function(df, q, y){
   names(df) <- c('PARK', 'BOROUGH', 'SIZE (ACRES)', 'CATEGORY', 'MURDER', 'RAPE', 
@@ -134,5 +136,5 @@ df <- rbind(df, agg(q1_21, 1, 2021))
 df <- rbind(df, agg(q2_21, 2, 2021))
 df <- rbind(df, agg(q3_21, 3, 2021))
 
-#write.csv(df,"park_crime.csv")
+write.csv(df,"park_crime.csv")
 ```

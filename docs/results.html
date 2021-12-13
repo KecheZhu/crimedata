@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 5 Results | An Analysis on Crime Data of NYC</title>
-  <meta name="description" content="Chapter 5 Results | An Analysis on Crime Data of NYC" />
+  <title>Chapter 5 Results | An Analysis on NYC Crime Data</title>
+  <meta name="description" content="Chapter 5 Results | An Analysis on NYC Crime Data" />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 5 Results | An Analysis on Crime Data of NYC" />
+  <meta property="og:title" content="Chapter 5 Results | An Analysis on NYC Crime Data" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Results | An Analysis on Crime Data of NYC" />
+  <meta name="twitter:title" content="Chapter 5 Results | An Analysis on NYC Crime Data" />
   
   
   
@@ -24,7 +24,7 @@
 <meta name="author" content="Tianhao Wu &amp; Kechengjie Zhu" />
 
 
-<meta name="date" content="2021-11-19" />
+<meta name="date" content="2021-12-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -77,7 +77,13 @@
 <li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
+<ul>
+<li class="chapter" data-level="5.0.1" data-path="results.html"><a href="results.html#annual-pattern-of-major-crime-types"><i class="fa fa-check"></i><b>5.0.1</b> Annual Pattern of Major Crime Types</a></li>
+<li class="chapter" data-level="5.0.2" data-path="results.html"><a href="results.html#crime-counts-vs-covid-19-new-cases"><i class="fa fa-check"></i><b>5.0.2</b> Crime Counts vs COVID-19 New Cases</a></li>
+<li class="chapter" data-level="5.0.3" data-path="results.html"><a href="results.html#felony-counts-vs-covid-19-new-cases"><i class="fa fa-check"></i><b>5.0.3</b> Felony Counts vs COVID-19 New Cases</a></li>
+<li class="chapter" data-level="5.0.4" data-path="results.html"><a href="results.html#park-crime"><i class="fa fa-check"></i><b>5.0.4</b> Park Crime</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
@@ -91,7 +97,7 @@
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Analysis on Crime Data of NYC</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Analysis on NYC Crime Data</a>
           </h1>
         </div>
 
@@ -101,7 +107,51 @@
             <section class="normal" id="section-">
 <div id="results" class="section level1" number="5">
 <h1><span class="header-section-number">Chapter 5</span> Results</h1>
+<div id="annual-pattern-of-major-crime-types" class="section level3" number="5.0.1">
+<h3><span class="header-section-number">5.0.1</span> Annual Pattern of Major Crime Types</h3>
+<p>Firstly, we wanted to visualize the patterns of three major types of crimes in NYC: Felony, Misdemeanor, and Violation. We plotted the daily crime counts from 2017 to 2021, and we were curious about: What is the annual pattern of different types of crime? Does the pattern fluctuates over years?</p>
+<p><img src="finalproj_files/figure-html/time%20series-1.png" width="1440" /></p>
+<p><strong>Observations &amp; Analysis:</strong></p>
+<ol style="list-style-type: decimal">
+<li>There is a clear and stable annual pattern from 2017 to 2019: crime counts first increase and reach the highest level in the middle of a year. Then they gradually decrease to their original level at the beginning of each year. The average level of crime counts is stable over years.</li>
+<li>All three types of crime follow the pattern. However, the level of Misdemeanor at the very beginning of each year is dramatically high, and it drops to its normal level within a few days.</li>
+<li>There is a sharp decline of crime counts around March 2020. Although the annual pattern of “first increase then decrease” still holds after that, the overall level of crime counts has been increasing since then. We think that the pattern shown in 2017 - 2019 is the normal pattern while the fluctuations in 2020 and 2021 might be caused by COVID-19.</li>
+<li>The crime counts of Felony reach the highest level in 5 years soon after the steep decrease in March 2020.</li>
+</ol>
+</div>
+<div id="crime-counts-vs-covid-19-new-cases" class="section level3" number="5.0.2">
+<h3><span class="header-section-number">5.0.2</span> Crime Counts vs COVID-19 New Cases</h3>
+<p>Here we plotted the daily crime counts in 2020 and 2021 together with COVID daily new cases in NYC to explore the impacts of COVID-19 on crime counts.</p>
+<p><img src="finalproj_files/figure-html/covid%20impacts-1.png" width="1440" /></p>
+<p><strong>Observations &amp; Analysis:</strong></p>
+<p>The steep decrease in crime counts happens soon after COVID-19 breaks out in NYC. As COVID daily new cases reach the first peak and start to decrease, crime counts raise up. However, as COVID-19 breaks out again in 2021, there is little fluctuation in crime counts.
+Our analysis is that: human activities were severely constrained due to the breakout of COVID-19, which led to the sharp decrease in crime counts. As the situation got better and people became active again, crime counts raised back to their original levels as a result. Since vaccines became available at the beginning of 2021 and people had already adapted to the existence of COVID-19, the second breakout of COVID had little impact on human activities including criminal behaviors.</p>
+</div>
+<div id="felony-counts-vs-covid-19-new-cases" class="section level3" number="5.0.3">
+<h3><span class="header-section-number">5.0.3</span> Felony Counts vs COVID-19 New Cases</h3>
+<p>The plots above could not explain the sharp increase in Felony counts after the first breakout of COVID-19. Therefore, we decided to dive into the relationship between Felony Counts and COVID Cases. We started with analyzing the patterns of Felony Counts in different boroughs.</p>
+<p><img src="finalproj_files/figure-html/felony%20in%20different%20boroughs-1.png" width="960" /></p>
+<p><strong>Observations &amp; Analysis:</strong></p>
+<p>From the plot we can see that the breakout of COVID-19 has little impact on the felony counts in Staten island. Although there is an increase in the other 4 boroughs, only the felony counts in Manhattan boom to a dramatically high level.</p>
+<p><img src="finalproj_files/figure-html/felony%20of%20different%20types-1.png" width="960" /></p>
+<p><strong>Observations &amp; Analysis:</strong></p>
+<p>From the plot of different felony types we can see that the sharp increase is mainly contributed by “Burglary”.</p>
+<p>Synthesizing the findings we have, we conclude that: the breakout of COVID-19 greatly constrained human activities and therefore caused economic difficulties for many people. As a result, some people would commit crimes once the situation got better. Burglary is one of the most straightforward way to get money and Manhattan is the richest borough in NYC. Therefore, most criminals chose to commit burglaries in Manhattan.</p>
+</div>
+<div id="park-crime" class="section level3" number="5.0.4">
+<h3><span class="header-section-number">5.0.4</span> Park Crime</h3>
+<p>Park Crime dataset consists of the counts of 7 major felonies that happened in parks and corresponding time and location information. Due to its outdoor nature, we believe that park crime should be highly correlated with seasons. Here we plotted the park crime counts in each quarter.</p>
+<p><img src="finalproj_files/figure-html/park%20crimes-felony-type-1.png" width="960" /></p>
+<p><img src="finalproj_files/figure-html/park%20crimes-felony-area-1.png" width="1440" /></p>
+<p><strong>Observations &amp; Analysis:</strong></p>
+<ol style="list-style-type: decimal">
+<li>From the plots we could see that park crime does have a very strong correlation with seasons. The count in the third quarter (summer) is the highest while the count in winter is the lowest, which is aligned with the pattern of human activities.</li>
+<li>Grand Larceny contributes to the largest portion of park crime counts and Robbery is the second.</li>
+<li>Among the 5 boroughs, Manhattan has the highest level of park crime counts.</li>
+<li>The breakout of COVID-19 also led to a sharp decrease in park crime counts, but was not followed up with a sharp increase. We think the reason is that human activities in many parks were still quite constrained even after the situation became better.</li>
+</ol>
 
+</div>
 </div>
             </section>
 

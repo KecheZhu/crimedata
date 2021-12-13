@@ -2,6 +2,11 @@
 
 Here is the function for plotting missing values
 
+```{r, pacakges missing values, include=FALSE}
+library(tidyverse)
+library(patchwork)
+```
+
 ```{r, plot function}
 plot_missing <- function(data, percent = FALSE) {
   if (percent == FALSE) {

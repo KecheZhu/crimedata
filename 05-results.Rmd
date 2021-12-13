@@ -1,6 +1,9 @@
 # Results
 
 ```{r read in data_chapter5, include=FALSE}
+library(tidyverse)
+library(zoo)
+library(lubridate)
 
 crime17 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crime_17.csv", show_col_types = FALSE)
 crime18 <- read_csv("https://raw.githubusercontent.com/KecheZhu/crimedata/main/data/crime_18.csv", show_col_types = FALSE)
@@ -18,7 +21,7 @@ crime21$date <- as.Date(crime21$date, format="%m/%d/%Y")
 covid$date_of_interest <- as.Date(covid$date_of_interest, format="%m/%d/%Y")
 ```
 
-### 1. Annual Pattern of Major Crime Types
+### Annual Pattern of Major Crime Types
 
 Firstly, we wanted to visualize the patterns of three major types of crimes in NYC: Felony, Misdemeanor, and Violation. We plotted the daily crime counts from 2017 to 2021, and we were curious about: What is the annual pattern of different types of crime? Does the pattern fluctuates over years?
 
@@ -47,7 +50,7 @@ g
 3. There is a sharp decline of crime counts around March 2020. Although the annual pattern of "first increase then decrease" still holds after that, the overall level of crime counts has been increasing since then. We think that the pattern shown in 2017 - 2019 is the normal pattern while the fluctuations in 2020 and 2021 might be caused by COVID-19. 
 4. The crime counts of Felony reach the highest level in 5 years soon after the steep decrease in March 2020.
 
-### 2. Crime Counts vs COVID-19 New Cases
+### Crime Counts vs COVID-19 New Cases
 
 Here we plotted the daily crime counts in 2020 and 2021 together with COVID daily new cases in NYC to explore the impacts of COVID-19 on crime counts. 
 
@@ -72,7 +75,7 @@ ggplot() +
 The steep decrease in crime counts happens soon after COVID-19 breaks out in NYC. As COVID daily new cases reach the first peak and start to decrease, crime counts raise up. However, as COVID-19 breaks out again in 2021, there is little fluctuation in crime counts. 
 Our analysis is that: human activities were severely constrained due to the breakout of COVID-19, which led to the sharp decrease in crime counts. As the situation got better and people became active again, crime counts raised back to their original levels as a result. Since vaccines became available at the beginning of 2021 and people had already adapted to the existence of COVID-19, the second breakout of COVID had little impact on human activities including criminal behaviors. 
 
-### 3. Felony Counts vs COVID-19 New Cases
+### Felony Counts vs COVID-19 New Cases
 
 The plots above could not explain the sharp increase in Felony counts after the first breakout of COVID-19. Therefore, we decided to dive into the relationship between Felony Counts and COVID Cases. We started with analyzing the patterns of Felony Counts in different boroughs.
 
@@ -137,7 +140,7 @@ From the plot of different felony types we can see that the sharp increase is ma
 
 Synthesizing the findings we have, we conclude that: the breakout of COVID-19 greatly constrained human activities and therefore caused economic difficulties for many people. As a result, some people would commit crimes once the situation got better. Burglary is one of the most straightforward way to get money and Manhattan is the richest borough in NYC. Therefore, most criminals chose to commit burglaries in Manhattan.  
 
-### 4. Park Crime
+### Park Crime
 
 Park Crime dataset consists of the counts of 7 major felonies that happened in parks and corresponding time and location information. Due to its outdoor nature, we believe that park crime should be highly correlated with seasons. Here we plotted the park crime counts in each quarter.
 
