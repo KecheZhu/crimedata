@@ -84,7 +84,7 @@ q2_21 <- read_excel('nyc-park-crime-stats-q2-2021.xlsx', skip = 3)
 q3_21 <- read_excel('nyc-park-crime-stats-q3-2021.xlsx', skip = 3)
 ```
 
-```{r, read in park crime data 2017 - 2021, include=FALSE}
+```{r, park crime data 2017 - 2021}
 
 agg <- function(df, q, y){
   names(df) <- c('PARK', 'BOROUGH', 'SIZE (ACRES)', 'CATEGORY', 'MURDER', 'RAPE', 
