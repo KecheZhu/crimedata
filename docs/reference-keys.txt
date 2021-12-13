@@ -3,9 +3,9 @@ data-sources
 data-transformation
 missing-values
 results
-interactive-component
-conclusion
 annual-pattern-of-major-crime-types
 crime-counts-vs-covid-19-new-cases
 felony-counts-vs-covid-19-new-cases
 park-crime
+interactive-component
+conclusion
