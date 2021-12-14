@@ -210,7 +210,33 @@ Our analysis is that: human activities were severely constrained due to the brea
 
 ## Felony Counts vs COVID-19 Cases
 
-Felony counts has shown the most interesting pattern in the previous graph. Therefore, we decided to dive into the relationship between Felony Counts and COVID Cases. We started with heat maps of major felonies by boroughs.
+Felony counts has shown the most interesting pattern in the previous graph. Therefore, we decided to dive into the relationship between Felony Counts and COVID Cases.
+
+The plots above could not explain the sharp increase in Felony counts after the first breakout of COVID-19. We continued to analyze the patterns of Felony Counts in different boroughs.
+
+```{r felony in different boroughs, fig.width=10}
+df <- crime20 %>% 
+  filter(level == 'FELONY') %>%
+  group_by(date,borough) %>% 
+  summarise(count = n()) %>% 
+  ungroup()
+
+covid20 <- covid %>% filter(year(date_of_interest) == 2020)
+
+ggplot() + 
+  geom_line(df, mapping = aes(date, count, color = borough)) +
+  geom_line(covid20, mapping = aes(date_of_interest, CASE_COUNT/10, linetype = "COVID"), color = "darkorchid1") +
+  scale_y_continuous("Felony Count", sec.axis = sec_axis(~ (.)*10, name = "Covid Count")) +
+  ggtitle("NYC Felony vs Covid") +
+  labs (x = "") +
+  theme_grey(16) +
+  theme(legend.title = element_blank())
+
+```
+
+**Observations & Analysis:**
+
+From the plot we can see that the breakout of COVID-19 has little impact on the felony counts in Staten island. Although there is an increase in the other 4 boroughs, only the felony counts in Manhattan boom to a dramatically high level. 
 
 ```{r}
 crime_t17 <- crime_all[crime_all$year < 2020, ]
@@ -259,32 +285,6 @@ g3 + plot_annotation(title = 'NYC Average Annual Felony Reports by Borough')
 
 It is evident from the heat maps that average annual felony reports decreased after 2019. Nonetheless, there has been a big growth in burglary cases, as it became the third mostly reported felony.
 
-The plots above could not explain the sharp increase in Felony counts after the first breakout of COVID-19. We continued to analyze the patterns of Felony Counts in different boroughs.
-
-```{r felony in different boroughs, fig.width=10}
-df <- crime20 %>% 
-  filter(level == 'FELONY') %>%
-  group_by(date,borough) %>% 
-  summarise(count = n()) %>% 
-  ungroup()
-
-covid20 <- covid %>% filter(year(date_of_interest) == 2020)
-
-ggplot() + 
-  geom_line(df, mapping = aes(date, count, color = borough)) +
-  geom_line(covid20, mapping = aes(date_of_interest, CASE_COUNT/10, linetype = "COVID"), color = "darkorchid1") +
-  scale_y_continuous("Felony Count", sec.axis = sec_axis(~ (.)*10, name = "Covid Count")) +
-  ggtitle("NYC Felony vs Covid") +
-  labs (x = "") +
-  theme_grey(16) +
-  theme(legend.title = element_blank())
-
-```
-
-**Observations & Analysis:**
-
-From the plot we can see that the breakout of COVID-19 has little impact on the felony counts in Staten island. Although there is an increase in the other 4 boroughs, only the felony counts in Manhattan boom to a dramatically high level. 
-
 ```{r felony of different types, fig.width=10}
 felony_type <- function(x) {
   if (x %in% c('GRAND LARCENY OF MOTOR VEHICLE', 'ROBBERY', 'BURGLARY', 'GRAND LARCENY', 'MURDER & NON-NEGL. MANSLAUGHTER', 'RAPE', 'FELONY ASSAULT')) {
@@ -318,7 +318,7 @@ ggplot() +
 
 **Observations & Analysis:**
 
-From the plot of different felony types we can see that the sharp increase is mainly contributed by "Burglary". 
+From the line chart of different felony types we can see more clearly that the sharp increase is mainly contributed by "Burglary".
 
 Synthesizing the findings we have, we conclude that: the breakout of COVID-19 greatly constrained human activities and therefore caused economic difficulties for many people. As a result, some people would commit crimes once the situation got better. Burglary is one of the most straightforward way to get money and Manhattan is the richest borough in NYC. Therefore, most criminals chose to commit burglaries in Manhattan.  
 
